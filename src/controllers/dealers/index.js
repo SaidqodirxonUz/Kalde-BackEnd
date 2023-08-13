@@ -1,0 +1,301 @@
+const { default: knex } = require("knex");
+const db = require("../../db/index");
+// const { BadRequestErr, NotFoundErr } = require("../../shared/errors");
+
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ * @param {knex} db
+ */
+const getDealers = async (req, res, next) => {
+  try {
+    // const a = await db.select().from("dealers");
+    const dealers = await db("dealers")
+      .leftJoin("images", "images.id", "=", "dealers.dealers_img_id")
+      .select(
+        "dealers.id",
+        //
+        "dealers.title_uz",
+        "dealers.title_ru",
+        "dealers.desc_uz",
+        "dealers.desc_ru",
+        "dealers.adress",
+        "dealers.location",
+        "dealers.email",
+        "dealers.orientation",
+        "dealers.work_at",
+        "dealers.phone_number",
+        "addition_number",
+
+        "images.image_url"
+      )
+      .groupBy("dealers.id", "images.id");
+
+    console.log(dealers);
+    res.json(dealers);
+  } catch (error) {
+    console.log("err shu yerdan");
+    throw error;
+  }
+};
+const showDealers = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const dealers = await db("dealers")
+      // .leftJoin("images", "images.id", "dealers.img_id")
+      .select(
+        "id",
+        //
+        "title_uz",
+        "title_ru",
+        "desc_uz",
+        "desc_ru",
+        "adress",
+        "location",
+        "email",
+        "orientation",
+        "work_at",
+        "phone_number",
+        "addition_number",
+
+        "dealers_img_id"
+      )
+      .where({ "dealers.id": id })
+      // .groupBy("dealers.id", "images.id")
+      .first();
+    if (!dealers) {
+      return res.status(404).json({
+        error: `${id} - Not Found`,
+      });
+    }
+    if (dealers.img_id) {
+      let id = dealers.img_id;
+      console.log(dealers.img_id);
+      imgUrl = await db("images").where({ id }).select("image_url");
+      console.log(imgUrl);
+      return res.status(201).json({
+        message: "success",
+        data: { ...dealers, ...imgUrl[0] },
+      });
+    }
+
+    // if (dealers.img_id) {
+    //   let id = dealers.img_id;
+    //   console.log(dealers.img_id);
+
+    //   const imgurl = await db("dealers")
+    //     .join("images", "dealerss.img_id", "=", "images.id")
+    //     .select("image_url")
+    //     .where("dealerss.id", id);
+
+    //   console.log(imgurl);
+
+    //   return res.status(201).json({
+    //     message: "success",
+    //     data: { ...dealers, ...imgurl[0] },
+    //   });
+    // }
+
+    return res.status(201).json({
+      message: "success",
+      data: dealers,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      error,
+    });
+  }
+};
+const patchDealers = async (req, res, next) => {
+  try {
+    const { ...changes } = req.body;
+    const { id } = req.params;
+    const existing = await db("dealers").where({ id }).first();
+
+    if (!existing) {
+      return res.status(404).json({
+        error: `${id} - Not found`,
+      });
+    }
+    if (req.file?.filename) {
+      let image = null;
+      let filename = req.file?.filename;
+      if (filename) {
+        image = await db
+          .insert({
+            filename,
+            image_url: `http://localhost:5000/${filename}`,
+          })
+          .into("images")
+          .returning(["id", "image_url", "filename"]);
+      }
+      const updated = await db("dealers")
+        .where({ id })
+        .update({ ...changes, dealers_img_id: { image }.image[0]?.id })
+        .returning([
+          "id",
+          //
+          "title_uz",
+          "title_ru",
+          "desc_uz",
+          "desc_ru",
+          "adress",
+          "location",
+          "email",
+          "orientation",
+          "work_at",
+          "phone_number",
+          "addition_number",
+
+          //
+        ]);
+      res.status(200).json({
+        updated: updated[0],
+      });
+    } else {
+      const updated = await db("dealers")
+        .where({ id })
+        .update({ ...changes, dealers_img_id: null })
+        .returning([
+          "id",
+          //
+          "title_uz",
+          "title_ru",
+          "desc_uz",
+          "desc_ru",
+          "adress",
+          "location",
+          "email",
+          "orientation",
+          "work_at",
+          "phone_number",
+          "addition_number",
+        ]);
+      res.status(200).json({
+        updated: updated[0],
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      error,
+    });
+  }
+};
+const postDealers = async (req, res, next) => {
+  try {
+    const {
+      id,
+      //
+      title_uz,
+      title_ru,
+      desc_uz,
+      desc_ru,
+      adress,
+      location,
+      email,
+      orientation,
+      work_at,
+      phone_number,
+      addition_number,
+
+      dealers_img_id,
+    } = req.body;
+    // console.log(dealers);
+    if (req.file?.filename) {
+      //  const { filename } = req.file;
+      let filename = req.file?.filename;
+
+      const image = await db("images")
+        .insert({
+          filename,
+          image_url: `http://localhost:5000/${filename}`,
+        })
+        .returning(["id", "image_url", "filename"]);
+      const dealers = await db("dealers")
+        .insert({
+          id,
+          title_uz,
+          title_ru,
+          desc_uz,
+          desc_ru,
+          adress,
+          location,
+          email,
+          orientation,
+          work_at,
+          phone_number,
+          addition_number,
+
+          dealers_img_id: { image }.image[0].id,
+        })
+        .returning(["*"]);
+
+      res.status(200).json({
+        data: [...dealers, image[0]],
+      });
+    } else {
+      const dealers = await db("dealers")
+        .insert({
+          id,
+          //
+          title_uz,
+          title_ru,
+          desc_uz,
+          desc_ru,
+          adress,
+          location,
+          email,
+          orientation,
+          work_at,
+          phone_number,
+          addition_number,
+
+          //   dealers_img_id: { image }.image[0].id,
+          dealers_img_id: null,
+        })
+        .returning(["*"]);
+
+      res.status(200).json({
+        data: [...dealers],
+      });
+    }
+  } catch (error) {
+    console.log(error);
+    // throw new NotFoundErr("something went wrong");
+    res.send(error);
+  }
+};
+const deleteDealers = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const existing = await db("dealers").where({ id }).first();
+
+    if (!existing) {
+      return res.status(404).json({
+        error: `${id} - Not found`,
+      });
+    }
+
+    const del = await db("dealers").where({ id }).returning(["*"]).del();
+
+    res.status(200).json({
+      deleted: del,
+    });
+  } catch (error) {
+    res.status(404).json({
+      error,
+    });
+  }
+};
+module.exports = {
+  getDealers,
+  postDealers,
+  showDealers,
+  patchDealers,
+  deleteDealers,
+};
+
+// phone_number

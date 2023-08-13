@@ -1,0 +1,42 @@
+Product
+-id
+-name        #2-tilda uz-ru
+-descriprion #2-tilda uz-ru
+-image
+
+Categories
+-id
+-image     #min 1
+-name      #2-tilda
+-prouct_id
+
+###
+
+News
+-id
+-name        #2-tilda uz-ru
+-descriprion #2-tilda uz-ru
+-image       #min 1
+-created
+-updated
+
+###
+
+Dealers
+-id
+-name
+-adress
+-phone_numbers #min2
+-image         #min 1
+-location      #google_location
+-work-at
+-orientr
+-email
+
+###
+
+Malumotlar 2 tilda uz,ru
+
+Admin panel faqat rus tilida
+
+Admin panel himoya qilinadi login page ochiladi va o'zgarmas Qiymatlar beriladi
