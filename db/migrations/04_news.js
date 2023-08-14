@@ -8,21 +8,17 @@ exports.up = function (knex) {
     table.string("title_uz", 300).notNullable();
     table.string("title_ru", 300).notNullable();
     table.string("title_en", 300).notNullable();
-
     //
     //
     table.text("desc_uz").notNullable();
     table.text("desc_ru").notNullable();
     table.text("desc_en").notNullable();
-
     //
     table
       .integer("news_img_id")
       .references("id")
       .inTable("images")
       .onDelete("SET NULL");
-
-    table.timestamps(true, true);
   });
 };
 

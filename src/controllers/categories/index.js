@@ -1,6 +1,7 @@
 const { default: knex } = require("knex");
 const db = require("../../db");
 const { BadRequestErr, NotFoundErr } = require("../../shared/errors");
+const { siteUrl } = require("../../shared/config");
 
 /**
  *
@@ -102,7 +103,7 @@ const patchCategories = async (req, res, next) => {
         image = await db
           .insert({
             filename,
-            image_url: `http://localhost:5000/${filename}`,
+            image_url: `${siteUrl}/${filename}`,
           })
           .into("images")
           .returning(["id", "image_url", "filename"]);
@@ -156,7 +157,7 @@ const postCategories = async (req, res, next) => {
         image = await db("images")
           .insert({
             filename,
-            image_url: `http://localhost:5000/${filename}`,
+            image_url: `${siteUrl}/${filename}`,
           })
           .returning(["id", "image_url", "filename"]);
       }

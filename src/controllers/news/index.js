@@ -1,5 +1,6 @@
 const { default: knex } = require("knex");
 const db = require("../../db/index");
+const { siteUrl } = require("../../shared/config");
 // const { BadRequestErr, NotFoundErr } = require("../../shared/errors");
 
 /**
@@ -52,6 +53,7 @@ const showNews = async (req, res, next) => {
         //
         "desc_uz",
         "desc_ru",
+        "desc_en",
 
         "news_img_id"
       )
@@ -121,7 +123,7 @@ const patchNews = async (req, res, next) => {
           .insert({
             filename,
 
-            image_url: `http://localhost:5000/${filename}`,
+            image_url: `${siteUrl}/${filename}`,
           })
           .into("images")
           .returning(["id", "image_url", "filename"]);
@@ -134,11 +136,13 @@ const patchNews = async (req, res, next) => {
           //
           "title_uz",
           "title_ru",
+          "title_en",
 
           //
           //
           "desc_uz",
           "desc_ru",
+          "desc_en",
 
           //
         ]);
@@ -154,11 +158,13 @@ const patchNews = async (req, res, next) => {
           //
           "title_uz",
           "title_ru",
+          "title_en",
 
           //
           //
           "desc_uz",
           "desc_ru",
+          "desc_en",
         ]);
       res.status(200).json({
         updated: updated[0],
@@ -168,18 +174,20 @@ const patchNews = async (req, res, next) => {
     console.log(error);
     res.status(400).json({
       error,
-    });
+    }); 
   }
 };
+
 const postNews = async (req, res, next) => {
   try {
     const {
-      id,
       title_uz,
       title_ru,
+      title_en,
 
       desc_uz,
       desc_ru,
+      desc_en,
     } = req.body;
     // console.log(news);
     if (req.file?.filename) {
@@ -189,17 +197,19 @@ const postNews = async (req, res, next) => {
       const image = await db("images")
         .insert({
           filename,
-
-          image_url: `http://localhost:5000/${filename}`,
+          image_url: `${siteUrl}/${filename}`,
+          // image_url: `http://localhost:8000/${filename}`,
         })
         .returning(["id", "image_url", "filename"]);
       const news = await db("news")
         .insert({
           title_uz,
           title_ru,
+          title_en,
 
           desc_uz,
           desc_ru,
+          desc_en,
 
           news_img_id: { image }.image[0].id,
         })
@@ -213,10 +223,11 @@ const postNews = async (req, res, next) => {
         .insert({
           title_uz,
           title_ru,
+          title_en,
 
           desc_uz,
           desc_ru,
-
+          desc_en,
           //   news_img_id: { image }.image[0].id,
           news_img_id: null,
         })
@@ -232,6 +243,7 @@ const postNews = async (req, res, next) => {
     res.send(error);
   }
 };
+
 const deleteNews = async (req, res, next) => {
   try {
     const { id } = req.params;

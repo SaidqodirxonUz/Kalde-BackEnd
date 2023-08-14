@@ -20,6 +20,7 @@ app.use(adminRoutes);
 app.use(categoryRoutes);
 app.use(productRoutes);
 app.use(dealersRoutes);
+
 app.use(newsRoutes);
 
 app.listen(config.port, () => {

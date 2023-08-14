@@ -1,6 +1,6 @@
 const express = require("express");
 const genValidator = require("../shared/validator");
-const { isLoggedIn, hasRole } = require("../shared/auth");
+const { isLoggedIn } = require("../shared/auth");
 const {
   postProductsSchema,
   patchProductsSchema,
@@ -11,13 +11,13 @@ const upload = require("../uploads");
 const router = express.Router();
 
 const mPostProducts = [
-  upload.single("image"),
+  upload.array("image"),
   isLoggedIn,
 
   genValidator(postProductsSchema),
 ];
 const mPatchProducts = [
-  upload.single("image"),
+  upload.array("image"),
   isLoggedIn,
 
   genValidator(patchProductsSchema),

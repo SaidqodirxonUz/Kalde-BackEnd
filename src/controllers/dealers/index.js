@@ -1,5 +1,6 @@
 const { default: knex } = require("knex");
 const db = require("../../db/index");
+const { siteUrl } = require("../../shared/config");
 // const { BadRequestErr, NotFoundErr } = require("../../shared/errors");
 
 /**
@@ -132,7 +133,7 @@ const patchDealers = async (req, res, next) => {
         image = await db
           .insert({
             filename,
-            image_url: `http://localhost:5000/${filename}`,
+            image_url: `${siteUrl}/${filename}`,
           })
           .into("images")
           .returning(["id", "image_url", "filename"]);
@@ -202,9 +203,11 @@ const postDealers = async (req, res, next) => {
       title_uz,
       title_ru,
       title_en,
+
       desc_uz,
       desc_ru,
       desc_en,
+
       adress,
       location,
       email,
@@ -223,7 +226,7 @@ const postDealers = async (req, res, next) => {
       const image = await db("images")
         .insert({
           filename,
-          image_url: `http://localhost:5000/${filename}`,
+          image_url: `${siteUrl}/${filename}`,
         })
         .returning(["id", "image_url", "filename"]);
       const dealers = await db("dealers")
@@ -232,9 +235,11 @@ const postDealers = async (req, res, next) => {
           title_uz,
           title_ru,
           title_en,
+
           desc_uz,
           desc_ru,
           desc_en,
+
           adress,
           location,
           email,
