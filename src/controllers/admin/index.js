@@ -10,6 +10,51 @@ const config = require("../../shared/config");
  * @param {express.Response} res
  */
 
+const getAdmin = async (req, res) => {
+  try {
+    const dbQuery = db("admin").select("id", "full_name", "phone_number");
+
+    const admin = await dbQuery;
+
+    res.status(200).json({
+      admin,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
+/**
+ *
+ * @param {express.Request} req
+ * @param {express.Response} res
+ */
+const showAdmin = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const admin = await db("admin")
+      .select("id", "full_name", "phone_number")
+      .where({ id })
+      .first();
+
+    if (!admin) {
+      return res.status(404).json({
+        error: "Admin topilmadi.",
+      });
+    }
+
+    res.status(200).json({
+      admin,
+    });
+  } catch (error) {
+    res.status(500).json({
+      error: error.message,
+    });
+  }
+};
+
 const patchAdmin = async (req, res) => {
   try {
     const { ...changes } = req.body;
@@ -36,51 +81,6 @@ const patchAdmin = async (req, res) => {
 
     res.status(200).json({
       updated: updated[0],
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: error.message,
-    });
-  }
-};
-const getAdmin = async (req, res) => {
-  try {
-    const dbQuery = db("admin").select("id", "full_name", "phone_number");
-
-    const admin = await dbQuery;
-
-    res.status(200).json({
-      admin,
-    });
-  } catch (error) {
-    res.status(500).json({
-      error: error.message,
-    });
-  }
-};
-
-/**
- * Get single admin
- * 1. Login qilgan hamma Adminlar ko'ra olishi mumkin
- * @param {express.Request} req
- * @param {express.Response} res
- */
-const showAdmin = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const admin = await db("admin")
-      .select("id", "full_name", "phone_number")
-      .where({ id })
-      .first();
-
-    if (!admin) {
-      return res.status(404).json({
-        error: "Admin topilmadi.",
-      });
-    }
-
-    res.status(200).json({
-      admin,
     });
   } catch (error) {
     res.status(500).json({
@@ -135,7 +135,7 @@ const loginAdmin = async (req, res) => {
 
 module.exports = {
   loginAdmin,
-  showAdmin,
-  getAdmin,
   patchAdmin,
+  getAdmin,
+  showAdmin,
 };

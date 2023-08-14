@@ -2,18 +2,17 @@ const { default: knex } = require("knex");
 const db = require("../../db");
 const { siteUrl } = require("../../shared/config");
 // const { BadRequestErr, NotFoundErr } = require("../../shared/errors");
-
 const getProducts = async (req, res, next) => {
   try {
-    const products = await db("products").select("*");
+    const products = await db("products")
+      .leftJoin("images", "images.id", "products.img_id")
+      .select("products.*", "images.image_url");
+
     return res.status(200).json({
-      message: "success",
       data: products,
     });
   } catch (error) {
-    console.error(error);
     return res.status(503).json({
-      status: 503,
       errMessage: "Server error",
     });
   }
