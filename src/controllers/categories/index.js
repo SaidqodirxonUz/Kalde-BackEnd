@@ -17,6 +17,7 @@ const getCategories = async (req, res, next) => {
         "categories.id",
         "categories.uz_category_name",
         "categories.ru_category_name",
+        "categories.en_category_name",
 
         "images.image_url"
       )
@@ -53,6 +54,7 @@ const showCategories = async (req, res, next) => {
         "id",
         "uz_category_name",
         "ru_category_name",
+        "en_category_name",
 
         "img_id"
       )
@@ -108,7 +110,13 @@ const patchCategories = async (req, res, next) => {
       const updated = await db("categories")
         .where({ id })
         .update({ ...changes, img_id: { image }.image[0]?.id || image })
-        .returning(["id", "uz_category_name", "ru_category_name", "img_id"]);
+        .returning([
+          "id",
+          "uz_category_name",
+          "ru_category_name",
+          "en_category_name",
+          "img_id",
+        ]);
 
       res.status(200).json({
         updated: [updated[0], ...image],
@@ -117,7 +125,13 @@ const patchCategories = async (req, res, next) => {
       const updated = await db("categories")
         .where({ id })
         .update({ ...changes, img_id: null })
-        .returning(["id", "uz_category_name", "ru_category_name", "img_id"]);
+        .returning([
+          "id",
+          "uz_category_name",
+          "ru_category_name",
+          "en_category_name",
+          "img_id",
+        ]);
 
       res.status(200).json({
         updated: updated[0],
@@ -133,7 +147,7 @@ const patchCategories = async (req, res, next) => {
 };
 const postCategories = async (req, res, next) => {
   try {
-    const { uz_category_name, ru_category_name } = req.body;
+    const { uz_category_name, ru_category_name, en_category_name } = req.body;
     if (req.file?.filename) {
       const filename = req.file?.filename;
       console.log(filename);
@@ -150,6 +164,7 @@ const postCategories = async (req, res, next) => {
         .insert({
           uz_category_name,
           ru_category_name,
+          en_category_name,
 
           img_id: { image }.image[0].id,
         })
@@ -163,6 +178,7 @@ const postCategories = async (req, res, next) => {
         .insert({
           uz_category_name,
           ru_category_name,
+          en_category_name,
 
           img_id: null,
         })

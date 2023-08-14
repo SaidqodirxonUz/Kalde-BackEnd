@@ -18,8 +18,12 @@ const getDealers = async (req, res, next) => {
         //
         "dealers.title_uz",
         "dealers.title_ru",
+        "dealers.title_en",
+
         "dealers.desc_uz",
         "dealers.desc_ru",
+        "dealers.desc_en",
+
         "dealers.adress",
         "dealers.location",
         "dealers.email",
@@ -49,8 +53,10 @@ const showDealers = async (req, res, next) => {
         //
         "title_uz",
         "title_ru",
+        "title_en",
         "desc_uz",
         "desc_ru",
+        "desc_en",
         "adress",
         "location",
         "email",
@@ -139,8 +145,10 @@ const patchDealers = async (req, res, next) => {
           //
           "title_uz",
           "title_ru",
+          "title_en",
           "desc_uz",
           "desc_ru",
+          "desc_en",
           "adress",
           "location",
           "email",
@@ -163,8 +171,10 @@ const patchDealers = async (req, res, next) => {
           //
           "title_uz",
           "title_ru",
+          "title_en",
           "desc_uz",
           "desc_ru",
+          "desc_en",
           "adress",
           "location",
           "email",
@@ -191,8 +201,10 @@ const postDealers = async (req, res, next) => {
       //
       title_uz,
       title_ru,
+      title_en,
       desc_uz,
       desc_ru,
+      desc_en,
       adress,
       location,
       email,
@@ -219,8 +231,10 @@ const postDealers = async (req, res, next) => {
           id,
           title_uz,
           title_ru,
+          title_en,
           desc_uz,
           desc_ru,
+          desc_en,
           adress,
           location,
           email,
@@ -243,8 +257,12 @@ const postDealers = async (req, res, next) => {
           //
           title_uz,
           title_ru,
+          title_en,
+
           desc_uz,
           desc_ru,
+          desc_en,
+
           adress,
           location,
           email,

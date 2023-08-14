@@ -18,9 +18,11 @@ const getNews = async (req, res, next) => {
         //
         "news.title_uz",
         "news.title_ru",
+        "news.title_en",
 
         "news.desc_uz",
         "news.desc_ru",
+        "news.desc_en",
 
         //
         "images.image_url"
@@ -44,6 +46,7 @@ const showNews = async (req, res, next) => {
         //
         "title_uz",
         "title_ru",
+        "title_en",
 
         //
         //

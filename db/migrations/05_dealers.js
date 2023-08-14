@@ -7,8 +7,10 @@ exports.up = function (knex) {
     table.increments("id").primary();
     table.string("title_uz", 300).notNullable();
     table.string("title_ru", 300).notNullable();
+    table.string("title_en", 300).notNullable();
     table.text("desc_uz").notNullable();
     table.text("desc_ru").notNullable();
+    table.text("desc_en").notNullable();
     table.string("adress", 300).notNullable();
     table.string("location", 300).notNullable();
     table.string("email", 300).notNullable();

@@ -7,6 +7,7 @@ exports.up = function (knex) {
     table.increments("id").primary();
     table.string("uz_category_name", 150).notNullable();
     table.string("ru_category_name", 150).notNullable();
+    table.string("en_category_name", 150).notNullable();
     table.integer("img_id").references("id").inTable("images").unique();
   });
 };

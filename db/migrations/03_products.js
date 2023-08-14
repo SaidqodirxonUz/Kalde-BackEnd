@@ -8,9 +8,11 @@ exports.up = function (knex) {
 
     table.string("uz_product_name", 250).notNullable().unique();
     table.string("ru_product_name", 250).notNullable().unique();
+    table.string("en_product_name", 250).notNullable().unique();
 
-    table.text("uz_description").notNullable();
-    table.text("ru_description").notNullable();
+    table.text("uz_desc").notNullable();
+    table.text("ru_desc").notNullable();
+    table.text("en_desc").notNullable();
 
     table
       .integer("category_id")
