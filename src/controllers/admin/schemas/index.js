@@ -1,5 +1,6 @@
-const { loginAdminSchema } = require("./login_admin");
+const { loginAdminSchema, patchAdminSchema } = require("./login_admin");
 
 module.exports = {
   loginAdminSchema,
+  patchAdminSchema,
 };

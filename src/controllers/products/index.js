@@ -107,49 +107,38 @@ const patchProducts = async (req, res, next) => {
     });
   }
 };
-
 const postProducts = async (req, res, next) => {
   try {
     const data = req.body;
     const files = req?.files;
-    // const products = await db("products")
-    //   .insert({
-    //     ...data,
-    //   })
-    //   .returning(["*"]);
 
-    if (req.files) {
-      const images = req.files.map((file) => ({
-        filename: file.filename,
-        image_url: `https://api.victoriaslove.uz/${file.filename}`,
-      }));
-      console.log("mapped images", images);
-      // insert(images);
-      let image = await db("images")
-        .insert(images)
+    if (files) {
+      const images = await db("images")
+        .insert(
+          files.map((file) => ({
+            filename: file.filename,
+            image_url: `${siteUrl}/${file.filename}`,
+          }))
+        )
         .returning(["id", "image_url", "filename"]);
-      // console.log(image, "inserted images");
 
-      // urls = ["a", "v"];
+      const imageId = images[0].id;
+
       const products = await db("products")
         .insert({
           ...data,
-          images: { ...image },
+          img_id: imageId,
         })
         .returning(["*"]);
+
       return res.status(200).json({
         data: products[0],
       });
     }
   } catch (error) {
-    console.log(error);
-
-    res.status(400).json({
-      message: `Xatolik! ${error}`,
-    });
+    res.status(400).json({ message: `Xatolik! ${error}` });
   }
 };
-
 const deleteProducts = async (req, res, next) => {
   try {
     const { id } = req.params;
