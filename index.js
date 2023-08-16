@@ -8,6 +8,7 @@ const categoryRoutes = require("./src/routes/categories");
 const productRoutes = require("./src/routes/products");
 const dealersRoutes = require("./src/routes/dealers");
 const newsRoutes = require("./src/routes/news");
+const sendMessageRoutes = require("./src/routes/sendmessage");
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use(adminRoutes);
 app.use(categoryRoutes);
 app.use(productRoutes);
 app.use(dealersRoutes);
+app.use(sendMessageRoutes);
 
 app.use(newsRoutes);
 
