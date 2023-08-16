@@ -19,6 +19,8 @@ exports.up = function (knex) {
       .references("id")
       .inTable("images")
       .onDelete("SET NULL");
+
+    table.timestamp("created_at").defaultTo(knex.fn.now());
   });
 };
 

@@ -25,6 +25,7 @@ const getNews = async (req, res, next) => {
         "news.desc_ru",
         "news.desc_en",
 
+        "news.created_at",
         //
         "images.image_url"
       )
@@ -54,6 +55,8 @@ const showNews = async (req, res, next) => {
         "desc_uz",
         "desc_ru",
         "desc_en",
+
+        "created_at",
 
         "news_img_id"
       )
@@ -144,6 +147,7 @@ const patchNews = async (req, res, next) => {
           "desc_ru",
           "desc_en",
 
+          "created_at",
           //
         ]);
       res.status(200).json({
@@ -165,6 +169,7 @@ const patchNews = async (req, res, next) => {
           "desc_uz",
           "desc_ru",
           "desc_en",
+          "created_at",
         ]);
       res.status(200).json({
         updated: updated[0],
@@ -174,7 +179,7 @@ const patchNews = async (req, res, next) => {
     console.log(error);
     res.status(400).json({
       error,
-    }); 
+    });
   }
 };
 
