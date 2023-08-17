@@ -51,7 +51,6 @@ const showDealers = async (req, res, next) => {
       // .leftJoin("images", "images.id", "dealers.img_id")
       .select(
         "id",
-        //
         "title_uz",
         "title_ru",
         "title_en",
@@ -65,7 +64,6 @@ const showDealers = async (req, res, next) => {
         "work_at",
         "phone_number",
         "addition_number",
-
         "dealers_img_id"
       )
       .where({ "dealers.id": id })
@@ -73,40 +71,27 @@ const showDealers = async (req, res, next) => {
       .first();
     if (!dealers) {
       return res.status(404).json({
-        error: `${id} - Not Found`,
+        error: `${id} - Topilmadi`,
       });
     }
-    if (dealers.img_id) {
-      let id = dealers.img_id;
-      console.log(dealers.img_id);
-      imgUrl = await db("images").where({ id }).select("image_url");
+
+    console.log(dealers.dealers_img_id);
+
+    if (dealers.dealers_img_id) {
+      let id = dealers.dealers_img_id;
+
+      let imgUrl = await db("images").where({ id }).select("image_url");
       console.log(imgUrl);
-      return res.status(201).json({
-        message: "success",
+
+      return res.status(200).json({
+        message: "muvaffaqiyat",
         data: { ...dealers, ...imgUrl[0] },
       });
     }
 
-    // if (dealers.img_id) {
-    //   let id = dealers.img_id;
-    //   console.log(dealers.img_id);
-
-    //   const imgurl = await db("dealers")
-    //     .join("images", "dealerss.img_id", "=", "images.id")
-    //     .select("image_url")
-    //     .where("dealerss.id", id);
-
-    //   console.log(imgurl);
-
-    //   return res.status(201).json({
-    //     message: "success",
-    //     data: { ...dealers, ...imgurl[0] },
-    //   });
-    // }
-
-    return res.status(201).json({
-      message: "success",
-      data: dealers,
+    return res.status(200).json({
+      message: "muvaffaqiyat",
+      data: [dealers],
     });
   } catch (error) {
     console.log(error);
@@ -115,6 +100,7 @@ const showDealers = async (req, res, next) => {
     });
   }
 };
+
 const patchDealers = async (req, res, next) => {
   try {
     const { ...changes } = req.body;
@@ -126,6 +112,11 @@ const patchDealers = async (req, res, next) => {
         error: `${id} - Not found`,
       });
     }
+
+    let oldImgId = "";
+    oldImgId = existing.img_id;
+    console.log(oldImgId);
+
     if (req.file?.filename) {
       let image = null;
       let filename = req.file?.filename;
@@ -140,7 +131,7 @@ const patchDealers = async (req, res, next) => {
       }
       const updated = await db("dealers")
         .where({ id })
-        .update({ ...changes, dealers_img_id: { image }.image[0]?.id })
+        .update({ ...changes, dealers_img_id: { image }.image[0]?.id || image })
         .returning([
           "id",
           //
@@ -158,7 +149,34 @@ const patchDealers = async (req, res, next) => {
           "phone_number",
           "addition_number",
 
+          "dealers_img_id",
           //
+        ]);
+      res.status(200).json({
+        updated: [updated[0], ...image],
+      });
+    } else if (oldImgId !== "") {
+      const updated = await db("dealers")
+        .where({ id })
+        .update({ ...changes, dealers_img_id: oldImgId })
+        .returning([
+          "id",
+          //
+          "title_uz",
+          "title_ru",
+          "title_en",
+          "desc_uz",
+          "desc_ru",
+          "desc_en",
+          "adress",
+          "location",
+          "email",
+          "orientation",
+          "work_at",
+          "phone_number",
+          "addition_number",
+
+          "dealers_img_id",
         ]);
       res.status(200).json({
         updated: updated[0],
@@ -183,6 +201,8 @@ const patchDealers = async (req, res, next) => {
           "work_at",
           "phone_number",
           "addition_number",
+
+          "dealers_img_id",
         ]);
       res.status(200).json({
         updated: updated[0],

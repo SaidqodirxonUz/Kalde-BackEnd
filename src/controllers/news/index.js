@@ -68,8 +68,8 @@ const showNews = async (req, res, next) => {
         error: `${id} - Not Found`,
       });
     }
-    if (news.img_id) {
-      let id = news.img_id;
+    if (news.news_img_id) {
+      let id = news.news_img_id;
       console.log(news.img_id);
       imgUrl = await db("images").where({ id }).select("image_url");
       console.log(imgUrl);
@@ -79,24 +79,7 @@ const showNews = async (req, res, next) => {
       });
     }
 
-    // if (news.img_id) {
-    //   let id = news.img_id;
-    //   console.log(news.img_id);
-
-    //   const imgurl = await db("news")
-    //     .join("images", "newss.img_id", "=", "images.id")
-    //     .select("image_url")
-    //     .where("news.id", id);
-
-    //   console.log(imgurl);
-
-    //   return res.status(201).json({
-    //     message: "success",
-    //     data: { ...news, ...imgurl[0] },
-    //   });
-    // }
-
-    return res.status(201).json({
+    return res.status(200).json({
       message: "success",
       data: news,
     });
@@ -107,11 +90,16 @@ const showNews = async (req, res, next) => {
     });
   }
 };
+
 const patchNews = async (req, res, next) => {
   try {
     const { ...changes } = req.body;
     const { id } = req.params;
     const existing = await db("news").where({ id }).first();
+
+    let oldImgId = "";
+    oldImgId = existing.img_id;
+    console.log(oldImgId);
 
     if (!existing) {
       return res.status(404).json({
@@ -133,7 +121,7 @@ const patchNews = async (req, res, next) => {
       }
       const updated = await db("news")
         .where({ id })
-        .update({ ...changes, news_img_id: { image }.image[0]?.id })
+        .update({ ...changes, news_img_id: { image }.image[0]?.id || image })
         .returning([
           "id",
           //
@@ -147,8 +135,36 @@ const patchNews = async (req, res, next) => {
           "desc_ru",
           "desc_en",
 
+          "news_img_id",
+
           "created_at",
+
           //
+        ]);
+      res.status(200).json({
+        updated: updated[0],
+        ...image,
+      });
+    } else if (oldImgId !== "") {
+      const updated = await db("news")
+        .where({ id })
+        .update({ ...changes, news_img_id: null })
+        .returning([
+          "id",
+          //
+          "title_uz",
+          "title_ru",
+          "title_en",
+
+          //
+          //
+          "desc_uz",
+          "desc_ru",
+          "desc_en",
+
+          "news_img_id",
+
+          "created_at",
         ]);
       res.status(200).json({
         updated: updated[0],
@@ -169,6 +185,9 @@ const patchNews = async (req, res, next) => {
           "desc_uz",
           "desc_ru",
           "desc_en",
+
+          "news_img_id",
+
           "created_at",
         ]);
       res.status(200).json({
