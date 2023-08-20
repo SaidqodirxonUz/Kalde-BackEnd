@@ -31,8 +31,8 @@ exports.patchProductsSchema = Joi.object({
 
   category_id: Joi.number().integer(),
 
-  price: Joi.string().integer(),
-  barcode: Joi.string().integer(),
+  price: Joi.string(),
+  barcode: Joi.string(),
 
   diametr: Joi.string(),
   ichki_diametr: Joi.string(),
