@@ -13,6 +13,8 @@ const sendMessageRoutes = require("./src/routes/sendmessage");
 const app = express();
 
 app.use(cors());
+app.options("*", cors());
+
 app.use(express.json());
 console.log(path.join(__dirname, "public"));
 app.use(express.static(path.join(__dirname, "public")));
