@@ -23,9 +23,22 @@ const FormSendMessage = async (req, res) => {
     !message ||
     message.length === 0
   )
-    return res.send("Fill all the inputs!");
+    return res
+      .status(400)
+      .json(
+        { error_uz: "Barcha maydonlarni to'ldiring" },
+        { error_ru: "Заполните все поля" },
+        { error_en: "Please fill all the fields." }
+      );
+
   if (isNaN(phone)) {
-    return res.send("Provide valid phone number");
+    return res
+      .status(403)
+      .json(
+        { error_uz: "Telefon raqamini to'gri kiriting" },
+        { error_ru: "Введите правильный номер телефона" },
+        { error_en: "Enter the correct phone number" }
+      );
   }
   try {
     for (const chatId of chatIds) {

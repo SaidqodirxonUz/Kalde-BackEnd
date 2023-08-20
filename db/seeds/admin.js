@@ -14,5 +14,11 @@ exports.seed = async function (knex) {
       phone_number: "+998904024707",
       password: hashSync("realcoderuz", 10),
     },
+    {
+      // id: 2,
+      full_name: "KaldeUz",
+      phone_number: "+998900152533",
+      password: hashSync("kaldeadmin", 10),
+    },
   ]);
 };

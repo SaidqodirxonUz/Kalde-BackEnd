@@ -12,7 +12,7 @@ exports.up = function (knex) {
     table.text("desc_ru").notNullable();
     table.text("desc_en").notNullable();
     table.string("adress", 300).notNullable();
-    table.string("location", 300).notNullable();
+    table.text("location").notNullable();
     table.string("email", 300).notNullable();
     table.string("orientation", 300).notNullable();
     table.string("work_at", 300).notNullable();

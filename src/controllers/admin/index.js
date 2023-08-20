@@ -20,7 +20,7 @@ const getAdmin = async (req, res) => {
       admin,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(400).json({
       error: error.message,
     });
   }
@@ -41,7 +41,7 @@ const showAdmin = async (req, res) => {
 
     if (!admin) {
       return res.status(404).json({
-        error: "Admin topilmadi.",
+        error: "Admin не найдено.",
       });
     }
 
@@ -49,7 +49,7 @@ const showAdmin = async (req, res) => {
       admin,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(400).json({
       error: error.message,
     });
   }
@@ -64,7 +64,7 @@ const patchAdmin = async (req, res) => {
 
     if (!existing) {
       return res.status(404).json({
-        error: `${id} idli Admin topilmadi.`,
+        error: `${id} - Admin не найдено.`,
       });
     }
 
@@ -83,7 +83,7 @@ const patchAdmin = async (req, res) => {
       updated: updated[0],
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(400).json({
       error: error.message,
     });
   }
@@ -100,7 +100,7 @@ const loginAdmin = async (req, res) => {
 
     if (!existing) {
       return res.status(401).json({
-        error: "phone_number yoki password xato.",
+        error: "Введенная информация неверна",
       });
     }
 
@@ -108,7 +108,7 @@ const loginAdmin = async (req, res) => {
 
     if (!match) {
       return res.status(401).json({
-        error: "phone_number yoki password xato.",
+        error: "Введенная информация неверна",
       });
     }
 
@@ -127,7 +127,7 @@ const loginAdmin = async (req, res) => {
     });
     console.log(existing);
   } catch (error) {
-    res.status(500).json({
+    res.status(400).json({
       error: error.message,
     });
   }

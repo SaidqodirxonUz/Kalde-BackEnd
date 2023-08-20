@@ -39,7 +39,7 @@ const getCategories = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    throw new BadRequestErr("Xatolik yuz berdi");
+    throw new BadRequestErr("Произошла ошибка");
     // res.status(400).json({
     //   status: 503,
     //   errMessage: `Serverda xato ${error}`,
@@ -62,7 +62,7 @@ const showCategories = async (req, res, next) => {
       .first();
     if (!category) {
       return res.status(400).json({
-        error: `${id} - idli category yo'q`,
+        error: `${id} Category не найдено`,
       });
     }
     // console.log(category);
@@ -81,7 +81,7 @@ const showCategories = async (req, res, next) => {
       data: { ...category },
     });
   } catch (error) {
-    // throw new BadRequestErr("Xatolik yuz berdi", error);
+    // throw new BadRequestErr("Произошла ошибка", error);
     next(error);
   }
 };
@@ -97,7 +97,7 @@ const patchCategories = async (req, res, next) => {
 
     if (!existing) {
       return res.status(404).json({
-        error: `${id}-idli category yo'q`,
+        error: `${id} Category не найдено`,
       });
     }
     if (req.file?.filename) {
@@ -160,7 +160,7 @@ const patchCategories = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     res.status(400).json({
-      message: `Xatolik! ${error}`,
+      message: `Произошла ошибка ${error}`,
     });
     // throw new NotFoundErr("Nothing founded!");
   }
@@ -211,7 +211,7 @@ const postCategories = async (req, res, next) => {
     console.log(error);
 
     res.status(400).json({
-      message: `Xatolik! ${error}`,
+      message: `Произошла ошибка ${error}`,
     });
     // throw new BadRequestErr("Something went wrong!", error);
     // res.send(error);
@@ -224,13 +224,14 @@ const deleteCategories = async (req, res, next) => {
 
     if (!existing) {
       return res.status(404).json({
-        error: `${id}-idli category yo'q`,
+        error: `${id} Category не найдено`,
       });
     }
 
     const del = await db("categories").where({ id }).returning(["*"]).del();
 
     res.status(200).json({
+      message: "Удалено успешно",
       deleted: del,
     });
   } catch (error) {
@@ -238,7 +239,7 @@ const deleteCategories = async (req, res, next) => {
     // throw new BadRequestErr("Something went wrong!", error);
 
     res.status(400).json({
-      message: `Xatolik! ${error}`,
+      message: `Произошла ошибка ${error}`,
     });
   }
 };

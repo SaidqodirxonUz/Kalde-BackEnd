@@ -65,7 +65,7 @@ const showNews = async (req, res, next) => {
       .first();
     if (!news) {
       return res.status(404).json({
-        error: `${id} - Not Found`,
+        error: `${id} не найдено`,
       });
     }
     if (news.news_img_id) {
@@ -103,7 +103,7 @@ const patchNews = async (req, res, next) => {
 
     if (!existing) {
       return res.status(404).json({
-        error: `${id} - Not found`,
+        error: `${id} не найдено`,
       });
     }
     if (req.file?.filename) {
@@ -240,6 +240,7 @@ const postNews = async (req, res, next) => {
         .returning(["*"]);
 
       res.status(200).json({
+        message: "Добавлено успешно",
         data: [...news, image[0]],
       });
     } else {
@@ -275,13 +276,14 @@ const deleteNews = async (req, res, next) => {
 
     if (!existing) {
       return res.status(404).json({
-        error: `${id} - Not found`,
+        error: `${id} не найдено`,
       });
     }
 
     const del = await db("news").where({ id }).returning(["*"]).del();
 
     res.status(200).json({
+      message: "Удалено успешно",
       deleted: del,
     });
   } catch (error) {

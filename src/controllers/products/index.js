@@ -21,7 +21,7 @@ const getProducts = async (req, res, next) => {
     });
   } catch (error) {
     return res.status(400).json({
-      errMessage: "Server error",
+      errMessage: "Произошла ошибка",
     });
   }
 };
@@ -34,8 +34,8 @@ const newProducts = async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(400).json({
-      status: 503,
-      errMessage: "Server error",
+      status: 400,
+      errMessage: "Произошла ошибка",
     });
   }
 };
@@ -47,7 +47,7 @@ const showProducts = async (req, res, next) => {
 
     if (!product) {
       return res.status(404).json({
-        error: `No product with id ${id}`,
+        error: `${id} не найдено`,
       });
     }
 
@@ -71,8 +71,8 @@ const showProducts = async (req, res, next) => {
   } catch (error) {
     console.error(error);
     return res.status(400).json({
-      status: 503,
-      errMessage: "Server error",
+      status: 400,
+      errMessage: "Произошла ошибка",
     });
   }
 };
@@ -87,7 +87,7 @@ const patchProducts = async (req, res, next) => {
 
     if (!existing) {
       return res.status(404).json({
-        error: `No product with id ${id}`,
+        error: `${id} не найдено`,
       });
     }
 
@@ -172,11 +172,14 @@ const postProducts = async (req, res, next) => {
         .returning(["*"]);
 
       return res.status(200).json({
+        message: "Добавлено успешно",
         data: products[0],
       });
     }
   } catch (error) {
-    res.status(400).json({ message: `Xatolik! rasm kelishi shart ${error}` });
+    res
+      .status(400)
+      .json({ message: `Ошибка! картинка должна прийти ${error}` });
   }
 };
 
@@ -187,7 +190,7 @@ const deleteProducts = async (req, res, next) => {
 
     if (!existing) {
       return res.status(404).json({
-        error: `No product with id ${id}`,
+        error: `${id} не найдено`,
       });
     }
 
@@ -197,13 +200,14 @@ const deleteProducts = async (req, res, next) => {
       .returning("*");
 
     return res.status(200).json({
+      message: "Удалено успешно",
       deleted: deletedProduct[0],
     });
   } catch (error) {
     console.error(error);
     return res.status(400).json({
-      status: 503,
-      errMessage: "Server error",
+      status: 400,
+      errMessage: "Произошла ошибка",
     });
   }
 };
