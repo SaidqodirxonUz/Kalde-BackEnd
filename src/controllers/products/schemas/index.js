@@ -22,12 +22,12 @@ exports.postProductsSchema = Joi.object({
 });
 
 exports.patchProductsSchema = Joi.object({
-  uz_product_name: Joi.string,
-  ru_product_name: Joi.string,
-  en_product_name: Joi.string,
-  uz_desc: Joi.string,
-  ru_desc: Joi.string,
-  en_desc: Joi.string,
+  uz_product_name: Joi.string(),
+  ru_product_name: Joi.string(),
+  en_product_name: Joi.string(),
+  uz_desc: Joi.string(),
+  ru_desc: Joi.string(),
+  en_desc: Joi.string(),
 
   category_id: Joi.number().integer(),
 
