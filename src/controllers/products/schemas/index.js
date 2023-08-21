@@ -8,6 +8,7 @@ exports.postProductsSchema = Joi.object({
   uz_desc: Joi.string().min(5),
   ru_desc: Joi.string().min(5),
   en_desc: Joi.string().min(5),
+
   category_id: Joi.number().integer(),
 
   price: Joi.string(),

@@ -99,6 +99,7 @@ const patchNews = async (req, res, next) => {
 
     let oldImgId = null;
     oldImgId = existing.news_img_id;
+
     console.log(oldImgId);
 
     if (!existing) {
@@ -146,10 +147,10 @@ const patchNews = async (req, res, next) => {
         updated: updated[0],
         ...image,
       });
-    } else if (oldImgId !== "") {
+    } else if (oldImgId !== null || oldImgId !== "" || oldImgId !== undefined) {
       const updated = await db("news")
         .where({ id })
-        .update({ ...changes, news_img_id: null })
+        .update({ ...changes, news_img_id: oldImgId })
         .returning([
           "id",
           //
