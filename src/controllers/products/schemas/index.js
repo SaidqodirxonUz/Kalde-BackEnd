@@ -10,8 +10,8 @@ exports.postProductsSchema = Joi.object({
   en_desc: Joi.string().min(5),
   category_id: Joi.number().integer(),
 
-  price: Joi.number().integer().required(),
-  barcode: Joi.number().integer().required(),
+  price: Joi.string(),
+  barcode: Joi.string(),
 
   diametr: Joi.string(),
   ichki_diametr: Joi.string(),

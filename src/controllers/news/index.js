@@ -97,8 +97,8 @@ const patchNews = async (req, res, next) => {
     const { id } = req.params;
     const existing = await db("news").where({ id }).first();
 
-    let oldImgId = "";
-    oldImgId = existing.img_id;
+    let oldImgId = null;
+    oldImgId = existing.news_img_id;
     console.log(oldImgId);
 
     if (!existing) {
@@ -106,6 +106,7 @@ const patchNews = async (req, res, next) => {
         error: `${id} не найдено`,
       });
     }
+
     if (req.file?.filename) {
       let image = null;
       let filename = req.file?.filename;

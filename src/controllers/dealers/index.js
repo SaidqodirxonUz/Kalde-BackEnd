@@ -114,7 +114,7 @@ const patchDealers = async (req, res, next) => {
     }
 
     let oldImgId = "";
-    oldImgId = existing.img_id;
+    oldImgId = existing.dealers_img_id;
     console.log(oldImgId);
 
     if (req.file?.filename) {
