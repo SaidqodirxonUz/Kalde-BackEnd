@@ -82,21 +82,22 @@ const patchProducts = async (req, res, next) => {
     const { ...changes } = req.body;
     const { id } = req.params;
     const reqfile = req?.files;
-
+    console.log(reqfile);
     const existing = await db("products").where({ id }).first();
-
+    console.log(existing);
     if (!existing) {
       return res.status(404).json({
         error: `${id} не найдено`,
       });
     }
-
+    // console.log("valdan keyin");
     let oldImgId = null;
     oldImgId = existing.img_id;
-
-    if (req.file?.filename) {
+    console.log(req.files[0].filename, "condition");
+    if (req.files[0].filename) {
+      // console.log("ifga kirdi");
       let image = null;
-      let filename = req.file?.filename;
+      let filename = req.files[0].filename;
 
       const files = {
         filename,
@@ -106,8 +107,8 @@ const patchProducts = async (req, res, next) => {
       image = await db("images")
         .insert(files)
         .returning(["id", "image_url", "filename"]);
-
-      console.log(image[0].id, "if dagi holat");
+      // console.log(image, "image");
+      // console.log(image[0].id, "if dagi holat");
 
       const updated = await db("products")
         .where({ id })
@@ -117,13 +118,13 @@ const patchProducts = async (req, res, next) => {
       return res.status(200).json({
         updated: updated[0],
       });
-    } else if (existing.img_id !== "" || existing.img_id !== nul) {
+    } else if (oldImgId !== "" || oldImgId !== nul) {
       const updated = await db("products")
         .where({ id })
-        .update({ ...changes, img_id: existing.img_id })
+        .update({ ...changes, img_id: oldImgId })
         .returning(["*"]);
 
-      console.log(existing.img_id, "else if dagi holat");
+      // console.log(oldImgId, "else if dagi holat");
 
       return res.status(200).json({
         updated: updated[0],

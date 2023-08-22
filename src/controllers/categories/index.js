@@ -100,6 +100,7 @@ const patchCategories = async (req, res, next) => {
         error: `${id} Category не найдено`,
       });
     }
+
     if (req.file?.filename) {
       let image = null;
       let filename = req.file?.filename;
@@ -112,6 +113,7 @@ const patchCategories = async (req, res, next) => {
           .into("images")
           .returning(["id", "image_url", "filename"]);
       }
+
       const updated = await db("categories")
         .where({ id })
         .update({ ...changes, img_id: { image }.image[0]?.id || image })
@@ -165,6 +167,7 @@ const patchCategories = async (req, res, next) => {
     // throw new NotFoundErr("Nothing founded!");
   }
 };
+
 const postCategories = async (req, res, next) => {
   try {
     const { uz_category_name, ru_category_name, en_category_name } = req.body;

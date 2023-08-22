@@ -58,13 +58,17 @@ const showAdmin = async (req, res) => {
 const patchAdmin = async (req, res) => {
   try {
     const { ...changes } = req.body;
-    const { id } = req.params;
+
+    const token = jwt.decode(req.headers.authorization, config.secret);
+    console.log("Bu token", token.id);
+
+    const id = token.id;
 
     const existing = await db("admin").where({ id }).first();
 
     if (!existing) {
       return res.status(404).json({
-        error: `${id} - Admin не найдено.`,
+        error: `${id} - Admin topilmadi.`,
       });
     }
 

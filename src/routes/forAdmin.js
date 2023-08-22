@@ -11,7 +11,7 @@ router.post(
   genValidator(schemas.loginAdminSchema),
   controllers.loginAdmin
 );
-router.patch("/admin/:id", isLoggedIn, controllers.patchAdmin);
+router.patch("/admin/me", isLoggedIn, controllers.patchAdmin);
 
 router.get("/admin", isLoggedIn, controllers.getAdmin);
 
