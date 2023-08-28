@@ -93,8 +93,8 @@ const patchProducts = async (req, res, next) => {
     // console.log("valdan keyin");
     let oldImgId = null;
     oldImgId = existing.img_id;
-    console.log(req.files[0].filename, "condition");
-    if (req.files[0].filename) {
+    // console.log(req.files[0].filename, "condition");
+    if (req.files[0] !== undefined) {
       // console.log("ifga kirdi");
       let image = null;
       let filename = req.files[0].filename;
