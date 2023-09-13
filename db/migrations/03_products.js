@@ -14,16 +14,6 @@ exports.up = function (knex) {
     table.text("ru_desc").notNullable();
     table.text("en_desc").notNullable();
 
-    table.string("price").notNullable();
-    table.string("barcode").notNullable().unique();
-
-    table.string("diametr");
-    table.string("ichki_diametr");
-    table.string("ichki_uzunlik");
-    table.string("tashqi_uzunlik");
-    table.string("razmer");
-    table.string("soni");
-
     table
       .integer("category_id")
       .unsigned()
@@ -32,6 +22,8 @@ exports.up = function (knex) {
       .onDelete("CASCADE");
 
     table.integer("img_id").references("id").inTable("images").unique();
+
+    table.integer("img1_id").references("id").inTable("images").unique();
   });
 };
 

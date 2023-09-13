@@ -10,35 +10,16 @@ exports.postProductsSchema = Joi.object({
   en_desc: Joi.string().min(5),
 
   category_id: Joi.number().integer(),
-
-  price: Joi.string(),
-  barcode: Joi.string(),
-
-  diametr: Joi.string(),
-  ichki_diametr: Joi.string(),
-  ichki_uzunlik: Joi.string(),
-  tashqi_uzunlik: Joi.string(),
-  razmer: Joi.string(),
-  soni: Joi.string(),
 });
 
 exports.patchProductsSchema = Joi.object({
   uz_product_name: Joi.string(),
   ru_product_name: Joi.string(),
   en_product_name: Joi.string(),
+
   uz_desc: Joi.string(),
   ru_desc: Joi.string(),
   en_desc: Joi.string(),
 
   category_id: Joi.number().integer(),
-
-  price: Joi.string(),
-  barcode: Joi.string(),
-
-  diametr: Joi.string(),
-  ichki_diametr: Joi.string(),
-  ichki_uzunlik: Joi.string(),
-  tashqi_uzunlik: Joi.string(),
-  razmer: Joi.string(),
-  soni: Joi.string(),
 });
