@@ -107,7 +107,7 @@ const patchProducts = async (req, res, next) => {
     let oldImg1Id = existing.img1_id;
 
     if (reqFiles && reqFiles.length > 0) {
-      const filenames = reqFiles.map((file) => file.originalname); // Extract filenames
+      const filenames = reqFiles.map((file) => file.filename); // Extract filenames
 
       const images = filenames.map((filename) => ({
         filename,
