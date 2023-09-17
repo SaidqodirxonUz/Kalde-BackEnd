@@ -1,10 +1,10 @@
 const { default: knex } = require("knex");
 const db = require("../../db");
 const { siteUrl } = require("../../shared/config");
-// const { BadRequestErr, NotFoundErr } = require("../../shared/errors");
+
 const getProducts = async (req, res, next) => {
   try {
-    const { categoryId } = req.query; // Kategoriya ID larini olish
+    const { categoryId } = req.query;
     let query = db("products")
       .leftJoin("images as img1", "img1.id", "products.img_id")
       .leftJoin("images as img2", "img2.id", "products.img1_id")
@@ -15,8 +15,8 @@ const getProducts = async (req, res, next) => {
       );
 
     if (categoryId) {
-      const categoryIdArray = categoryId.split(","); // Kategoriya ID larini vergul bilan ajratib olamiz
-      query = query.whereIn("products.category_id", categoryIdArray); // Kategoriya ID lari asosida filterlash
+      const categoryIdArray = categoryId.split(",");
+      query = query.whereIn("products.category_id", categoryIdArray);
     }
 
     const products = await query;
@@ -25,7 +25,9 @@ const getProducts = async (req, res, next) => {
       data: products,
     });
   } catch (error) {
+    console.error("Error in getProducts:", error);
     return res.status(400).json({
+      status: 400,
       errMessage: "Произошла ошибка",
     });
   }
@@ -37,15 +39,13 @@ const newProducts = async (req, res, next) => {
 
     return res.json(data);
   } catch (error) {
-    console.error(error);
+    console.error("Error in newProducts:", error);
     return res.status(400).json({
       status: 400,
       errMessage: "Произошла ошибка",
     });
   }
 };
-
-// 99 878 221 0272
 
 const showProducts = async (req, res, next) => {
   try {
@@ -79,7 +79,7 @@ const showProducts = async (req, res, next) => {
       },
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error in showProducts:", error);
     return res.status(400).json({
       status: 400,
       errMessage: "Произошла ошибка",
@@ -107,24 +107,21 @@ const patchProducts = async (req, res, next) => {
     let oldImg1Id = existing.img1_id;
 
     if (reqFiles && reqFiles.length > 0) {
-      const filenames = reqFiles.map((file) => file.filename); // Extract filenames
+      const filenames = reqFiles.map((file) => file.filename);
 
       const images = filenames.map((filename) => ({
         filename,
         image_url: `${siteUrl}/${filename}`,
       }));
 
-      // Insert the first image
       const [image1] = await db("images")
         .insert(images[0])
         .returning(["id", "image_url", "filename"]);
 
-      // Insert the second image
       const [image2] = await db("images")
         .insert(images[1])
         .returning(["id", "image_url", "filename"]);
 
-      // Update the product with both images
       const updated = await db("products")
         .where({ id })
         .update({ ...changes, img_id: image1.id, img1_id: image2.id })
@@ -136,12 +133,10 @@ const patchProducts = async (req, res, next) => {
     } else {
       const updatedData = { ...changes };
 
-      // If oldImgId and oldImg1Id are not null, include them in the update
       if (oldImgId !== null || oldImg1Id !== null) {
         updatedData.img_id = oldImgId;
         updatedData.img1_id = oldImg1Id;
       } else {
-        // If they are null, set them to null explicitly
         updatedData.img_id = null;
         updatedData.img1_id = null;
       }
@@ -168,6 +163,10 @@ const postProducts = async (req, res, next) => {
   try {
     const data = req.body;
     const files = req?.files;
+
+    if (files == undefined || null || []) {
+      return res.status(400).json({ error: "rasm kelishi shart" });
+    }
 
     if (files && files.length === 2) {
       const [image1, image2] = files;
@@ -203,6 +202,7 @@ const postProducts = async (req, res, next) => {
       });
     }
   } catch (error) {
+    console.error("Error in postProducts:", error);
     res.status(400).json({
       message: `Ошибка! Картинки должны быть предоставлены и их должно быть две ${error}`,
     });
@@ -230,7 +230,7 @@ const deleteProducts = async (req, res, next) => {
       deleted: deletedProduct[0],
     });
   } catch (error) {
-    console.error(error);
+    console.error("Error in deleteProducts:", error);
     return res.status(400).json({
       status: 400,
       errMessage: "Произошла ошибка",

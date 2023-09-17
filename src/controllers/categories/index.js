@@ -171,6 +171,11 @@ const patchCategories = async (req, res, next) => {
 const postCategories = async (req, res, next) => {
   try {
     const { uz_category_name, ru_category_name, en_category_name } = req.body;
+
+    if (req?.files == undefined || null || []) {
+      return res.status(400).json({ error: "rasm kelishi shart" });
+    }
+
     if (req.file?.filename) {
       const filename = req.file?.filename;
       console.log(filename);
