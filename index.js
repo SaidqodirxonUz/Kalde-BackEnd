@@ -1,5 +1,6 @@
 const express = require("express");
 const cors = require("cors");
+const bodyParser = require("body-parser");
 const path = require("path");
 const config = require("./src/shared/config");
 
@@ -16,6 +17,9 @@ app.use(cors());
 app.options("*", cors());
 
 app.use(express.json());
+app.use(bodyParser.json({ limit: "50mb" }));
+app.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
+
 console.log(path.join(__dirname, "public"));
 app.use(express.static(path.join(__dirname, "public")));
 
