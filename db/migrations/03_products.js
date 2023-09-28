@@ -10,9 +10,9 @@ exports.up = function (knex) {
     table.string("ru_product_name", 250).notNullable();
     table.string("en_product_name", 250).notNullable();
 
-    table.text("uz_desc").notNullable();
-    table.text("ru_desc").notNullable();
-    table.text("en_desc").notNullable();
+    table.text("uz_desc");
+    table.text("ru_desc");
+    table.text("en_desc");
 
     table
       .integer("category_id")
