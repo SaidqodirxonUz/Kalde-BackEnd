@@ -23,7 +23,7 @@ exports.up = function (knex) {
 
     table.integer("img_id").references("id").inTable("images").unique();
 
-    // table.integer("img1_id").references("id").inTable("images").unique();
+    table.integer("img1_id").references("id").inTable("images").unique();
   });
 };
 
