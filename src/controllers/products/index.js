@@ -1,4 +1,3 @@
-const { default: knex } = require("knex");
 const db = require("../../db");
 const { siteUrl } = require("../../shared/config");
 // const { BadRequestErr, NotFoundErr } = require("../../shared/errors");
@@ -6,13 +5,8 @@ const getProducts = async (req, res, next) => {
   try {
     const { categoryId } = req.query; // Kategoriya ID larini olish
     let query = db("products")
-      .leftJoin("images as img1", "img1.id", "products.img_id")
-      .leftJoin("images as img2", "img2.id", "products.img1_id")
-      .select(
-        "products.*",
-        "img1.image_url as img_url",
-        "img2.image_url as img_url1"
-      );
+      .leftJoin("images", "images.id", "products.img_id")
+      .select("products.*", "images.image_url");
 
     if (categoryId) {
       const categoryIdArray = categoryId.split(","); // Kategoriya ID larini vergul bilan ajratib olamiz
@@ -45,8 +39,6 @@ const newProducts = async (req, res, next) => {
   }
 };
 
-// 99 878 221 0272
-
 const showProducts = async (req, res, next) => {
   try {
     const { id } = req.params;
@@ -58,26 +50,23 @@ const showProducts = async (req, res, next) => {
       });
     }
 
-    let img_id = product.img_id;
-    let img1_id = product.img1_id;
+    console.log(product.img_id);
 
-    let imgUrls = await db("images")
-      .whereIn("id", [img_id, img1_id])
-      .select("id", "image_url");
+    if (product.img_id) {
+      let id = product.img_id;
 
-    let imgUrlsMap = {};
-    imgUrls.forEach((img) => {
-      imgUrlsMap[img.id] = img.image_url;
-    });
+      imgUrl = await db("images").where({ id }).select("image_url");
+      console.log(imgUrl);
+      return res.status(201).json({
+        message: "success",
+        data: { ...product, ...imgUrl[0] },
+      });
+    }
 
-    return res.status(201).json({
-      message: "success",
-      data: {
-        ...product,
-        img_url: imgUrlsMap[img_id],
-        img1_url: imgUrlsMap[img1_id],
-      },
-    });
+    // return res.status(200).json({
+    //   message: "success",
+    //   data: product,
+    // });
   } catch (error) {
     console.error(error);
     return res.status(400).json({
@@ -91,9 +80,9 @@ const patchProducts = async (req, res, next) => {
   try {
     const { ...changes } = req.body;
     const { id } = req.params;
-    const reqFiles = req?.files;
+    const reqfile = req?.files;
 
-    console.log(reqFiles);
+    console.log(req?.files, "req.files");
 
     const existing = await db("products").where({ id }).first();
 
@@ -103,111 +92,98 @@ const patchProducts = async (req, res, next) => {
       });
     }
 
-    let oldImgId = existing.img_id;
-    let oldImg1Id = existing.img1_id;
+    let oldImgId = null;
+    oldImgId = existing.img_id;
+    console.log(oldImgId, "oldimg_id");
 
-    if (reqFiles && reqFiles.length > 0) {
-      const filenames = reqFiles.map((file) => file.filename); // Extract filenames
+    if (req.files[0]) {
+      let image = null;
+      let filename = req.files[0]?.filename;
 
-      const images = filenames.map((filename) => ({
+      console.log(req.files[0], "0si");
+
+      const files = {
         filename,
         image_url: `${siteUrl}/${filename}`,
-      }));
+      };
 
-      // Insert the first image
-      const [image1] = await db("images")
-        .insert(images[0])
+      image = await db("images")
+        .insert(files)
         .returning(["id", "image_url", "filename"]);
 
-      // Insert the second image
-      const [image2] = await db("images")
-        .insert(images[1])
-        .returning(["id", "image_url", "filename"]);
+      console.log(image[0].id, "if dagi holat");
 
-      // Update the product with both images
       const updated = await db("products")
         .where({ id })
-        .update({ ...changes, img_id: image1.id, img1_id: image2.id })
+        .update({ ...changes, img_id: image[0].id })
         .returning(["*"]);
+
+      return res.status(200).json({
+        updated: updated[0],
+      });
+    } else if (existing.img_id !== "" || existing.img_id !== null) {
+      const updated = await db("products")
+        .where({ id })
+        .update({ ...changes, img_id: existing.img_id })
+        .returning(["*"]);
+
+      console.log(existing.img_id, "else if dagi holat");
 
       return res.status(200).json({
         updated: updated[0],
       });
     } else {
-      const updatedData = { ...changes };
-
-      // If oldImgId and oldImg1Id are not null, include them in the update
-      if (oldImgId !== null || oldImg1Id !== null) {
-        updatedData.img_id = oldImgId;
-        updatedData.img1_id = oldImg1Id;
-      } else {
-        // If they are null, set them to null explicitly
-        updatedData.img_id = null;
-        updatedData.img1_id = null;
-      }
-
       const updated = await db("products")
         .where({ id })
-        .update(updatedData)
+        .update({ ...changes, img_id: null })
         .returning(["*"]);
 
       return res.status(200).json({
-        updated: updated[0],
+        updated: updated,
       });
     }
   } catch (error) {
-    console.error("Error in patchProducts:", error);
+    console.error(error);
     return res.status(400).json({
       status: 400,
-      error: "An error occurred while processing the request.",
+      error,
     });
   }
 };
 
 const postProducts = async (req, res, next) => {
   try {
-    console.log(req, "bu request");
-
     const data = req.body;
     const files = req?.files;
 
-    if (files && files.length === 2) {
-      const [image1, image2] = files;
-
-      const imagesData = await db("images")
-        .insert([
-          {
-            filename: image1.filename,
-            image_url: `${siteUrl}/${image1.filename}`,
-          },
-          {
-            filename: image2.filename,
-            image_url: `${siteUrl}/${image2.filename}`,
-          },
-        ])
+    if (files) {
+      const images = await db("images")
+        .insert(
+          files.map((file) => ({
+            filename: file.filename,
+            image_url: `${siteUrl}/${file.filename}`,
+          }))
+        )
         .returning(["id", "image_url", "filename"]);
 
-      const [image1Data, image2Data] = imagesData;
+      const imageId = images[0].id;
 
-      const product = await db("products")
+      const products = await db("products")
         .insert({
           ...data,
-          img_id: image1Data.id,
-          img1_id: image2Data.id,
+          img_id: imageId,
         })
         .returning(["*"]);
 
-      console.log(product, "insert boladigan products data");
-
       return res.status(200).json({
         message: "Добавлено успешно",
-        data: product[0],
+        data: products[0],
       });
     }
   } catch (error) {
-    res.status(400).json({
-      message: `Ошибка! Картинки должны быть предоставлены и их должно быть две ${error}`,
-    });
+    res
+      .status(400)
+      .json({ message: `Ошибка! картинка должна прийти ${error}` });
   }
 };
 
