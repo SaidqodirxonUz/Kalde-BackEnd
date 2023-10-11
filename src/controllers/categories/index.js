@@ -20,16 +20,18 @@ const getCategories = async (req, res, next) => {
         "categories.en_category_name",
         "images.image_url"
       )
+      .orderBy("categories.id", "asc")
       .groupBy("categories.id", "images.id");
-    console.log(Categories);
-    for (let i = 0; i < Categories.length; i++) {
-      const id = Categories[i].id;
-      const product = await db("products")
+
+    categories.sort((a, b) => a.id - b.id); // Kategoriyalarni 'id' boyicha tartiblash
+
+    for (let i = 0; i < categories.length; i++) {
+      const id = categories[i].id;
+      const products = await db("products")
         .where({ category_id: id })
-        .select("*");
-      console.log(product, id);
-      Categories[i].totalProducts = product.length;
-      console.log(Categories);
+        .select("*")
+        .orderBy("id", "asc");
+      categories[i].totalProducts = products.length;
     }
 
     return res.status(200).json({
@@ -41,6 +43,7 @@ const getCategories = async (req, res, next) => {
     throw new BadRequestErr("Произошла ошибка");
   }
 };
+
 const showCategories = async (req, res, next) => {
   try {
     const { id } = req.params;
