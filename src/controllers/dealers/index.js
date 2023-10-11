@@ -22,6 +22,32 @@ const getDealers = async (req, res, next) => {
   }
 };
 
+const showDealers = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const dealers = await db("dealers")
+      .select("*")
+      .where({ "dealers.id": id })
+
+      .first();
+    if (!dealers) {
+      return res.status(404).json({
+        error: `${id} - не найдено`,
+      });
+    }
+
+    return res.status(200).json({
+      message: "успешно",
+      data: [dealers],
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({
+      error,
+    });
+  }
+};
+
 const patchDealers = async (req, res, next) => {
   try {
     const { ...changes } = req.body;
@@ -120,6 +146,7 @@ const deleteDealers = async (req, res, next) => {
 module.exports = {
   getDealers,
   postDealers,
+  showDealers,
   patchDealers,
   deleteDealers,
 };
