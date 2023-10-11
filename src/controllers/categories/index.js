@@ -11,7 +11,7 @@ const { siteUrl } = require("../../shared/config");
  */
 const getCategories = async (req, res, next) => {
   try {
-    const Categories = await db("categories")
+    const categories = await db("categories")
       .leftJoin("images", "images.id", "categories.img_id")
       .select(
         "categories.id",
@@ -21,29 +21,29 @@ const getCategories = async (req, res, next) => {
         "images.image_url"
       )
       .orderBy('categories.id', 'asc')
-      .groupBy("categories.id", "images.id")
+      .groupBy("categories.id", "images.id");
     
-    for (let i = 0; i < Categories.length; i++) {
-      const id = Categories[i].id;
-      const product = await db("products")
+    categories.sort((a, b) => a.id - b.id); // Kategoriyalarni 'id' boyicha tartiblash
+
+    for (let i = 0; i < categories.length; i++) {
+      const id = categories[i].id;
+      const products = await db("products")
         .where({ category_id: id })
         .select("*")
         .orderBy('id', 'asc');
-      Categories[i].totalProducts = product.length;
+      categories[i].totalProducts = products.length;
     }
-
-    // Kategoriyalarni 'id' ga ko'ra tartiblab chiqish
-    Categories.sort((a, b) => a.id - b.id);
 
     return res.status(200).json({
       message: "success",
-      data: [...Categories],
+      data: categories, // data array sifatida qaytaramiz, [...categories] kerak emas
     });
   } catch (error) {
     console.log(error);
     throw new BadRequestErr("Произошла ошибка");
   }
 };
+
 
 
 const showCategories = async (req, res, next) => {
