@@ -10,7 +10,6 @@ const { siteUrl } = require("../../shared/config");
  * @param {knex} db
  */
 const getCategories = async (req, res, next) => {
-  // console.log(db("categories"));
   try {
     const Categories = await db("categories")
       .leftJoin("images", "images.id", "categories.img_id")
@@ -19,20 +18,20 @@ const getCategories = async (req, res, next) => {
         "categories.uz_category_name",
         "categories.ru_category_name",
         "categories.en_category_name",
-
         "images.image_url"
       )
-      .groupBy("categories.id", "images.id").orderBy('id', 'asc');
-    console.log(Categories);
+      .groupBy("categories.id", "images.id")
+      .orderBy('categories.id', 'asc');
+    
     for (let i = 0; i < Categories.length; i++) {
       const id = Categories[i].id;
       const product = await db("products")
         .where({ category_id: id })
-        .select("*");
-      console.log(product, id);
+        .select("*")
+        .orderBy('id', 'asc'); // Bu yerda 'your_sort_field'ni o'zgartiring
       Categories[i].totalProducts = product.length;
-      console.log(Categories);
     }
+
     return res.status(200).json({
       message: "success",
       data: [...Categories],
@@ -40,10 +39,6 @@ const getCategories = async (req, res, next) => {
   } catch (error) {
     console.log(error);
     throw new BadRequestErr("Произошла ошибка");
-    // res.status(400).json({
-    //   status: 503,
-    //   errMessage: `Serverda xato ${error}`,
-    // });
   }
 };
 const showCategories = async (req, res, next) => {
