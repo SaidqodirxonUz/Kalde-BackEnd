@@ -9,11 +9,8 @@ patchDealersSchema = Joi.object({
   desc_ru: Joi.string(),
   desc_en: Joi.string(),
 
-  adress: Joi.string(),
   location: Joi.string(),
-  email: Joi.string(),
-  orientation: Joi.string(),
-  work_at: Joi.string(),
+
   phone_number: Joi.string(),
   addition_number: Joi.string(),
   //
@@ -28,11 +25,8 @@ postDealersSchema = Joi.object({
   desc_ru: Joi.string().required(),
   desc_en: Joi.string(),
 
-  adress: Joi.string().required(),
   location: Joi.string().required(),
-  email: Joi.string().required(),
-  orientation: Joi.string().required(),
-  work_at: Joi.string().required(),
+
   phone_number: Joi.string().required(),
   addition_number: Joi.string(),
   //
@@ -47,11 +41,8 @@ getDealersSchema = Joi.object({
   desc_ru: Joi.string(),
   desc_en: Joi.string(),
 
-  adress: Joi.string(),
   location: Joi.string(),
-  email: Joi.string(),
-  orientation: Joi.string(),
-  work_at: Joi.string(),
+
   phone_number: Joi.string(),
   addition_number: Joi.string(),
 });

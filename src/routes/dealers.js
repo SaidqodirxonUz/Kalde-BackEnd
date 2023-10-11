@@ -33,8 +33,6 @@ router.post("/dealers", sPostDealers, dealersController.postDealers);
 
 router.get("/dealers", dealersController.getDealers);
 
-router.get("/dealers/:id", dealersController.showDealers);
-
 router.patch("/dealers/:id", sPatchDealers, dealersController.patchDealers);
 
 router.delete("/dealers/:id", mDeleteDealers, dealersController.deleteDealers);
