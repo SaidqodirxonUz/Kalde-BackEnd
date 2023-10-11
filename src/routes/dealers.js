@@ -4,28 +4,17 @@ const { isLoggedIn, hasRole } = require("../shared/auth");
 const {
   postDealersSchema,
   patchDealersSchema,
-  getDealersSchema,
 } = require("../controllers/dealers/schemas/index");
 const dealersController = require("../controllers/dealers");
 const upload = require("../uploads");
 
 const router = express.Router();
 
-const sPostDealers = [
-  upload.single("image"),
-  isLoggedIn,
-  genValidator(postDealersSchema),
-];
+const sPostDealers = [isLoggedIn, genValidator(postDealersSchema)];
 // const sGetDealers = [isLoggedIn];
 // const mShowDealers = [isLoggedIn];
 
-const sGetDealers = [isLoggedIn, genValidator(getDealersSchema)];
-
-const sPatchDealers = [
-  upload.single("image"),
-  isLoggedIn,
-  genValidator(patchDealersSchema),
-];
+const sPatchDealers = [isLoggedIn, genValidator(patchDealersSchema)];
 
 const mDeleteDealers = [isLoggedIn];
 
