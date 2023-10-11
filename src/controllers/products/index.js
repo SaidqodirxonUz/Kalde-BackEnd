@@ -6,7 +6,7 @@ const getProducts = async (req, res, next) => {
     const { categoryId } = req.query; // Kategoriya ID larini olish
     let query = db("products")
       .leftJoin("images", "images.id", "products.img_id")
-      .select("products.*", "images.image_url");
+      .select("products.*", "images.image_url").orderBy('id', 'asc');
 
     if (categoryId) {
       const categoryIdArray = categoryId.split(","); // Kategoriya ID larini vergul bilan ajratib olamiz
