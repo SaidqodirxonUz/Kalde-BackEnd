@@ -22,7 +22,7 @@ const getCategories = async (req, res, next) => {
 
         "images.image_url"
       )
-      .groupBy("categories.id", "images.id").orderBy('categories.id', 'asc');
+      .groupBy("categories.id", "images.id").orderBy('id', 'asc');
     console.log(Categories);
     for (let i = 0; i < Categories.length; i++) {
       const id = Categories[i].id;
