@@ -12,7 +12,7 @@ const { siteUrl } = require("../../shared/config");
 const getDealers = async (req, res, next) => {
   try {
     // const a = await db.select().from("dealers");
-    const dealers = await db("dealers").select("*");
+    const dealers = await db("dealers").select("*").orderBy("id", "asc");
 
     console.log(dealers);
     res.json(dealers);
