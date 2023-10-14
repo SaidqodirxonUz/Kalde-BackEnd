@@ -29,6 +29,7 @@ const getNews = async (req, res, next) => {
         //
         "images.image_url"
       )
+      .orderBy("news.id", "asc")
       .groupBy("news.id", "images.id");
 
     console.log(news);
