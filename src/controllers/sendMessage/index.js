@@ -2,6 +2,7 @@ const TelegramBot = require("node-telegram-bot-api");
 const chatIds = [
   1551855614 /* @Real_Coder */, 6066715653 /* @kalde_03 */,
   6480245379 /* @kalde_01*/, 5033207519 /* @MegaCoder_uz */,
+  2127610874 /* @Rajapov_Supersite */, 3520694 /* @YorqinAgzamOvich */,
 ];
 
 const bot = new TelegramBot(
